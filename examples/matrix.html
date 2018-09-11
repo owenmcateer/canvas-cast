@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Canvas WebSocket Matrix</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  </head>
+<body>
+<div class="wsBar">
+  <div class="brightness">
+    Matrix brightness:
+    <small>0%</small>
+    <input id="matrix-brightness" type="range" min="0" max="255" step="1" value="127" >
+    <small>100%</small>
+  </div>
+
+  <h4><a href="https://github.com/owenmcateer/Canvas-WS-Matrix" target="_blank">Canvas WS Matrix</a></h4>
+  <div class="status"></div>
+  <div class="statusTxt"></div>
+  <div class="statusIP"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
+<script src="./src/App.js"></script>
+<script>
+// Config
+const matrix = {
+  // Matrix IP & port
+  ip: '192.168.1.94:81',
+  // Matrix pixel size
+  width: 15,
+  height: 15,
+  // Matrix brightness 0-255
+  brightness: 127,
+  // Context type (2d/webgl)
+  type: '2d',
+};
+
+// Start WS Matrix
+wsMatrix.init(matrix);
+
+
+/**
+ * p5js 2D Matrix rain
+ */
+const colours = [];
+const cx = Math.round(matrix.width / 2);
+
+const lines = [];
+
+function setup() {
+  createCanvas(matrix.width, matrix.height);
+  pixelDensity(1);
+  colorMode(RGB, 255, 255, 255, 1);
+  frameRate(30);
+
+  // Colours
+  colours.bg = [0, 3, 0, 0.1];
+  colours.first = [190, 227, 192];
+  colours.green = [30, 130, 42];
+  colours.greenDark = [0, 58, 0];
+
+  // Create rain
+  for (let i = 0; i < matrix.width; i++) {
+    lines.push(new line(i, round(random(matrix.height * -1, 0))));
+  }
+}
+
+function draw() {
+  background(colours.bg);
+
+  lines.forEach((line) => {
+    line.update();
+    line.render();
+  });
+
+  // Cast data
+  const p5canvas = document.getElementById('defaultCanvas0');
+  wsMatrix.cast(p5canvas);
+}
+
+class line {
+  constructor(x, y) {
+    this.x = x;
+    this.reset(y);
+  }
+
+  reset(y) {
+    this.y = y;
+    this.count = round(random(5, 12));
+    this.speed = random(0.1, 0.3);
+    this.pixels = [];
+    for (let i = 0; i < this.count; i++) {
+      this.pixels.push(new Pixel(
+        this.x,
+        (this.count * -1) + i + this.y,
+        i / (this.count - 1),
+        this.speed));
+    }
+  }
+
+  update() {
+    // Move
+    this.y += this.speed;
+    this.pixels.forEach((p) => {
+      p.update();
+    });
+
+    // Reset?
+    if ((this.y - this.count) > matrix.height) {
+      this.reset(0);
+    }
+  }
+
+  render() {
+    this.pixels.forEach((p) => {
+      p.render();
+    });
+  }
+}
+
+class Pixel {
+  constructor(x, y, pos, speed) {
+    this.x = x;
+    this.y = y;
+    this.pos = pos;
+    this.speed = speed;
+    this.firstLight = (random() > 0.6) ? 1 : 0;
+  }
+
+  update() {
+    this.y += this.speed;
+  }
+
+  render() {
+    if (this.pos === 1 && this.firstLight) {
+      fill(colours.first);
+    }
+    else {
+      fill(lerpColor(color(...colours.green), color(...colours.greenDark), 1 - this.pos));
+    }
+
+    noStroke();
+    rect(this.x, this.y, 1, 1);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "canvas-ws-matrix",
+  "author": "Owen McAteer",
+  "version": "1.0.0",
+  "description": "Cast any <canvas> element to an LED Matrix over WebSockets with an Arduino/ESP8266.",
+  "main": "src/App.js",
+  "scripts": {
+    "start": "parcel ./src/index.html",
+    "build": "parcel build ./src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Canvas",
+    "Arduino",
+    "LED Matrix",
+    "RGB LED",
+    "JavaScript",
+    "cast",
+    "stream"
+  ],
+  "license": "GNU GPLv3",
+  "devDependencies": {
+    "parcel": "^1.9.7",
+    "node-sass": "^4.9.3"
+  }
+}

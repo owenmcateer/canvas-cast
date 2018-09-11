@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Canvas WebSocket Matrix</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  </head>
+<body>
+<div class="wsBar">
+  <div class="brightness">
+    Matrix brightness:
+    <small>0%</small>
+    <input id="matrix-brightness" type="range" min="0" max="255" step="1" value="127" >
+    <small>100%</small>
+  </div>
+
+  <h4><a href="https://github.com/owenmcateer/Canvas-WS-Matrix" target="_blank">Canvas WS Matrix</a></h4>
+  <div class="status"></div>
+  <div class="statusTxt"></div>
+  <div class="statusIP"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
+
+<script src="./src/App.js"></script>
+<script>
+// Config
+const matrix = {
+  // Matrix IP & port
+  ip: '192.168.1.94:81',
+  // Matrix pixel size
+  width: 15,
+  height: 15,
+  // Matrix brightness 0-255
+  brightness: 127,
+  // Context type (2d/webgl)
+  type: 'webgl',
+};
+
+// Start WS Matrix
+wsMatrix.init(matrix);
+
+
+/**
+ * 3D WebGL using p5js
+ */
+function setup() {
+  createCanvas(matrix.width, matrix.height, WEBGL);
+  setAttributes('antialias', true);
+  frameRate(30);
+  pixelDensity(1);
+}
+
+function draw() {
+  background(0);
+  noFill();
+  stroke(255);
+  strokeWeight(1);
+  rotateX(frameCount * 0.1);
+  rotateY(frameCount * 0.1);
+  box(9);
+
+  // Cast data
+  const p5canvas = document.getElementById('defaultCanvas0');
+  wsMatrix.cast(p5canvas);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Canvas WebSocket Matrix</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  </head>
+<body>
+<div class="wsBar">
+  <div class="brightness">
+    Matrix brightness:
+    <small>0%</small>
+    <input id="matrix-brightness" type="range" min="0" max="255" step="1" value="127" >
+    <small>100%</small>
+  </div>
+
+  <h4><a href="https://github.com/owenmcateer/Canvas-WS-Matrix" target="_blank">Canvas WS Matrix</a></h4>
+  <div class="status"></div>
+  <div class="statusTxt"></div>
+  <div class="statusIP"></div>
+</div>
+<script src="./src/App.js"></script>
+<script>
+// Config
+const matrix = {
+  // Matrix IP & port
+  ip: '192.168.1.94:81',
+  // Matrix pixel size
+  width: 15,
+  height: 15,
+  // Matrix brightness 0-255
+  brightness: 127,
+  // Context type (2d/webgl)
+  type: '2d',
+};
+
+// Start WS Matrix
+wsMatrix.init(matrix);
+
+// Create Canvas
+const canvas = document.createElement('canvas');
+canvas.width = matrix.width;
+canvas.height = matrix.height;
+document.body.appendChild(canvas);
+context = canvas.getContext('2d');
+
+
+/**
+ * Vanilla JS + Canvas
+ * Conway’s Game of Life
+ * https://en.wikipedia.org/wiki/Conway's_Game_of_Life
+ */
+
+// Build random starting grids
+const gridWidth = matrix.width;
+const gridHeight = matrix.height;
+const fps = 10;
+let grid;
+reset();
+
+// Alive & dead pixels
+const alive = context.createImageData(1, 1);
+alive.data.fill(255);
+const dead = context.createImageData(1, 1);
+dead.data = [0, 0, 0, 255];
+dead.data[3] = 255;
+
+/**
+ * Render grid
+ */
+function renderGrid() {
+  for (let x = 0; x < gridWidth; x++) {
+    for (let y = 0; y < gridHeight; y++) {
+      context.putImageData((grid[x][y]) ? alive : dead, x, y);
+    }
+  }
+}
+
+/**
+ * Count alive neighbors.
+ * @param {Int} x
+ * @param {Int} y
+ */
+function countNeighbors(x, y) {
+  let sum = 0;
+  for (let i = -1; i < 2; i++) {
+    for (let j = -1; j < 2; j++) {
+      // Wrap around world
+      const col = (x + i + gridWidth) % gridWidth;
+      const row = (y + j + gridHeight) % gridHeight;
+      sum += grid[col][row];
+    }
+  }
+
+  // Subtract self
+  sum -= grid[x][y];
+
+  // Return sum
+  return sum;
+}
+
+/**
+ * Animate life
+ */
+function animateLife() {
+  // Render grid
+  renderGrid();
+
+  // Cast data
+  wsMatrix.cast(canvas);
+
+  // Calculate and update next array
+  const next = Array(gridWidth).fill(0).map(() =>
+    Array(gridHeight).fill(0));
+  for (let x = 0; x < gridWidth; x++) {
+    for (let y = 0; y < gridHeight; y++) {
+      // Check neighbors
+      const state = grid[x][y];
+      const neighbors = countNeighbors(x, y);
+
+      // 4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+      if (state === 0 && neighbors === 3) {
+        next[x][y] = 1;
+      }
+      // 1. Any live cell with fewer than two live neighbors dies, as if by under population.
+      // 3. Any live cell with more than three live neighbors dies, as if by overpopulation.
+      else if (state === 1 && (neighbors < 2 || neighbors > 3)) {
+        next[x][y] = 0;
+      }
+      else {
+        // 2. Any live cell with two or three live neighbors lives on to the next generation.
+        next[x][y] = grid[x][y];
+      }
+    }
+  }
+
+  // Update grid to be rendered
+  grid = next;
+}
+
+/**
+ * Reset game
+ */
+function reset() {
+  grid = Array(gridWidth).fill(0).map(() =>
+    Array(gridHeight).fill(0).map(() => Math.floor(Math.random() * 2)));
+}
+
+// Start
+setInterval(() => {
+  animateLife();
+}, 1000 / fps);
+
+// Click to reset
+canvas.addEventListener('click', reset);
+</script>
+</body>
+</html>
