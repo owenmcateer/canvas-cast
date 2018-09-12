@@ -1,5 +1,5 @@
 {
-  "name": "canvas-ws-matrix",
+  "name": "canvas-cast",
   "author": "Owen McAteer",
   "version": "1.0.0",
   "description": "Cast any <canvas> element to an LED Matrix over WebSockets with an Arduino/ESP8266.",
