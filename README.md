@@ -5,7 +5,8 @@ Bring your HTML canvas projects into the real world by streaming them in realtim
 
 
 ## Features:
- - Stream any canvas element
+ - Stream any canvas element over WiFi
+ - Tested with 225 pixels at 60fps
  - 2D or 3D(WebGL)
  - Supports all popular LED types (powered by [FastLED](https://github.com/FastLED/FastLED))
  - Matrix brightness control
@@ -23,12 +24,12 @@ Bring your HTML canvas projects into the real world by streaming them in realtim
 ## Getting started setup
 In this example setup we're using:
 * ESP8266 NodeMCU
-* 15x15 RGB LED matrix (WS2812B)
+* 15x15 RGB LED Matrix (WS2812B)
 * 5V 10A PSU
-* Laptop & home wifi
+* Laptop & home WiFi
 
 ### Arduino/ESP8266
-1. Open the Arduino sketch file and edit the following settings:
+1. Open the [Arduino sketch file](arduino/WS-Matrix.ino) and edit the following settings:
 ```c
 // Wifi SSID and password
 const char* ssid = "NetworkName";
@@ -41,12 +42,12 @@ const uint8_t kMatrixHeight = 15;
 #define COLOR_ORDER GRB
 #define CHIPSET WS2812B
 ```
-2. Upload sketch to ESP8266.
-3. Open console monitor and take note of ESP8266's IP address. (or check your Wifi route)
-4. On the Matrix, pixel zero(status pixel) will flash orange while it connects to Wifi, once connected it will pluse green to indacate it is ready.
+2. Upload sketch to the ESP8266.
+3. Open console monitor and take note of ESP8266's IP address. (or check your WiFi route)
+4. On the Matrix, pixel zero([status pixel](arduino/README.md)) will flash orange while it connects to Wifi, once connected it will pluse green to indacate it is ready.
 
 ### Web interface
-1. Open src/index.html and edit the following config found at the top of the document.
+1. Open src/index.html and edit the following config, found at the top of the document.
 WS port will be 81 unless you changed it in the Arduino sketch.
 ```javascript
 // Config
