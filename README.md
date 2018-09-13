@@ -14,7 +14,8 @@ Bring your HTML canvas projects into the real world by streaming them in realtim
  - Supports all popular LED types (powered by [FastLED](https://github.com/FastLED/FastLED))
  - Matrix brightness control
  - Matrix status pixel
- - Web status/control  
+ - Web status/control
+ 
 ![Status bar](examples/imgs/Canvas-Cast-status-bar.jpg "Status bar")
 
 
