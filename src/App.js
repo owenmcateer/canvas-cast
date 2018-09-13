@@ -1,13 +1,14 @@
 /**
- * Canvas WS Matrix
- * Stream a canvas element to a LED Matrix.
+ * Canvas Cast
+ * Cast any <canvas> element to an LED Matrix
+ * over WebSockets with an Arduino/ESP8266.
  */
 
 // Styles
 import './css/styles.scss';
 
 
-class WsMatrix {
+class CanvasCast {
   /**
    * Init()
    * @param {Obj} settings
@@ -254,5 +255,5 @@ class WsMatrix {
 
 
 // Export WS Matrix
-const matrixClass = new WsMatrix();
-window.wsMatrix = matrixClass;
+const matrixClass = new CanvasCast();
+window.canvasCast = matrixClass;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Canvas WebSocket Matrix</title>
+    <title>Canvas Cast</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
@@ -15,7 +15,7 @@
     <small>100%</small>
   </div>
 
-  <h4><a href="https://github.com/owenmcateer/Canvas-WS-Matrix" target="_blank">Canvas WS Matrix</a></h4>
+  <h4><a href="https://github.com/owenmcateer/canvas-cast" target="_blank">Canvas Cast</a></h4>
   <div class="status"></div>
   <div class="statusTxt"></div>
   <div class="statusIP"></div>
@@ -36,7 +36,7 @@ const matrix = {
 };
 
 // Start WS Matrix
-wsMatrix.init(matrix);
+canvasCast.init(matrix);
 
 // Create Canvas
 const canvas = document.createElement('canvas');
@@ -48,7 +48,7 @@ context = canvas.getContext('2d');
 //
 // Your code here
 // Just remember to call `cast()` on each frame:
-// wsMatrix.cast(canvas);
+// canvasCast.cast(canvas);
 //
 
 
@@ -76,7 +76,7 @@ function paintToCanvas() {
   context.drawImage(video, 0, 0, matrix.width, matrix.height);
 
   // Cast data
-  wsMatrix.cast(canvas);
+  canvasCast.cast(canvas);
 }
 getVideo();
 video.addEventListener('canplay', () => {
