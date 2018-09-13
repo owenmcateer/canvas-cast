@@ -1,7 +1,10 @@
-# Canvas Cast Matrix
+# Cast `<canvas>` to a Matrix
+
+![WebGL 3D](examples/imgs/3D-Cube.gif "WebGL 3D")
+
 Cast any `<canvas>` element to an LED Matrix over WebSockets with an Arduino/ESP8266.
 
-Bring your HTML canvas projects into the real world by streaming them in realtime over WiFi to an LED Matrix, using an Arduino compatable board with WiFi, such as the ESP8266.
+Bring your HTML canvas projects into the real world by streaming them in realtime over WiFi to an LED Matrix, using an Arduino compatable board with WiFi, such as the ESP8266..
 
 
 ## Features:
@@ -13,13 +16,17 @@ Bring your HTML canvas projects into the real world by streaming them in realtim
  - Matrix status pixel
 
 
-## Examples
-### [3D WebGL](examples/3D-cube.html)
-![WebGL 3D](examples/imgs/3D-Cube.gif "WebGL 3D")
+## More examples
+
+### [Vanilla Canvas+JS (Game of Life)](examples/Game-of-life.html)
+![Game of Life](examples/imgs/Game-of-life.gif "Game of Life")
+
 ### [p5js (Matrix rain)](examples/matrix.html)
 ![Matrix rain - p5js](examples/imgs/Matrix.gif "Matrix rain - p5js")
+
 ### [Webcam streaming](examples/webcam.html)
 ![Webcam streaming - p5js](examples/imgs/Webcam.gif "Webcam streaming")
+
 
 ## Getting started setup
 In this example setup we're using:
