@@ -20,7 +20,7 @@
   ],
   "license": "GNU GPLv3",
   "devDependencies": {
-    "parcel": "^1.9.7",
-    "node-sass": "^4.9.3"
+    "node-sass": "^4.9.3",
+    "parcel": "^1.11.0"
   }
 }
