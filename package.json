@@ -9,6 +9,10 @@
     "build": "parcel build ./src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/owenmcateer/canvas-cast.git"
+  },
   "keywords": [
     "Canvas",
     "Arduino",
@@ -18,7 +22,7 @@
     "cast",
     "stream"
   ],
-  "license": "GNU GPLv3",
+  "license": "gpl-3.0",
   "devDependencies": {
     "node-sass": "^4.9.3",
     "parcel": "^1.11.0"
