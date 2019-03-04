@@ -7,6 +7,7 @@ const char* password = "";
 // Matrix size
 const uint8_t kMatrixWidth = 16;
 const uint8_t kMatrixHeight = 8;
+const uint8_t maxBrightness = 255;
 
 // Matrix settings
 // See FastLED for more info: https://github.com/FastLED/FastLED/wiki/Overview
@@ -41,7 +42,7 @@ void setup() {
 
   // Start Matrix
   FastLED.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
-  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.setBrightness(min(BRIGHTNESS, maxBrightness);
   // Set status LED
   leds[0] = CRGB::Yellow;
   FastLED.show();
@@ -109,7 +110,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 
         if (cmd == String("BRIGHTNESS")) {
           // Set matrix brightness
-          FastLED.setBrightness(val);
+          int mappedBrightness = map(val, 0, 255, 0, maxBrightness);
+          FastLED.setBrightness(mappedBrightness);
         }
         else {
           // Command not understood

@@ -12,3 +12,6 @@ dist/
 
 # Silly Mac
 .DS_Store
+
+# Editors
+.vscode/
