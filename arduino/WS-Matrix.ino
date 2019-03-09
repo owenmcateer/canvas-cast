@@ -27,6 +27,8 @@ const int maxBrightness = 255;
 WebSocketsServer webSocket = WebSocketsServer(81);
 
 // Matrix
+#define FASTLED_INTERRUPT_RETRY_COUNT 0
+#define FASTLED_ALLOW_INTERRUPTS 0
 #include <FastLED.h>
 #define NUM_LEDS (kMatrixWidth * kMatrixHeight)
 CRGB leds_plus_safety_pixel[NUM_LEDS + 1];
