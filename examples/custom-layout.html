@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Canvas Cast - Custom matrix layout</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  </head>
+<body>
+<div class="wsBar">
+  <div class="brightness">
+    Matrix brightness:
+    <small>0%</small>
+    <input id="matrix-brightness" type="range" min="0" max="255" step="1" value="127" >
+    <small>100%</small>
+  </div>
+
+  <h4><a href="https://github.com/owenmcateer/canvas-cast" target="_blank">Canvas Cast</a></h4>
+  <div class="status"></div>
+  <div class="statusTxt"></div>
+  <div class="statusIP"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
+<script src="../src/App.js"></script>
+<script>
+// Config
+const matrix = {
+  // Matrix IP & port
+  ip: '192.168.1.50:81',
+  // Matrix pixel size
+  width: 520,
+  height: 520,
+  // Matrix brightness 0-255
+  brightness: 20,
+  // Context type (2d/webgl)
+  type: '2d',
+  // Custom pixel map
+  customMap: gFxMap(520),
+};
+
+// Start WS Matrix
+canvasCast.init(matrix);
+
+
+/**
+ * Example custom matrix layout p5js sketch
+ */
+const cx = Math.round(matrix.width / 2);
+let testY = 0;
+
+function setup() {
+  createCanvas(matrix.width, matrix.height);
+  pixelDensity(1);
+  colorMode(RGB, 255, 255, 255, 1);
+  frameRate(30);
+}
+
+function draw() {
+  background(0);
+
+  // Test shape
+  fill('blue');
+  push();
+  translate(cx, cx);
+  rotate(frameCount / 10);
+  quad(-80, 0, 80, 0, cx, cx, cx, cx);
+  pop();
+  if (testY > matrix.height) {
+    testY = 0;
+  }
+  // Test line
+  fill(255);
+  noStroke();
+  rect(0, testY, matrix.width, 20);
+  testY += 10;
+
+
+  // Cast data
+  const p5canvas = document.getElementById('defaultCanvas0');
+  canvasCast.cast(p5canvas);
+  // Custom pixel map guide
+  canvasCast.guide(p5canvas, 5);
+}
+
+
+/**
+ * Custom pixel mapper.
+ * @param {Int} Matrix size
+ * @return {array} Array of pixels with X&Y coordinates
+ */
+function gFxMap(size) {
+  // gFx map
+  const pixelMap = [];
+  const arms = 24;
+  const armPixels = 21;
+  const armAngle = ((Math.PI * 2) / arms);
+  const angleOffset = Math.PI + (armAngle * 1);
+  const midPoint = Math.round(size / 2);
+  let led = 0;
+  
+  // Arms
+  for (let i = arms; i > 0; i--) {
+    const angle = armAngle * i + angleOffset;
+    
+    // Arm pixels
+    for(j = 0; j < armPixels; j++) {
+      const radius = (j * 10) + 50;
+      const x = (Math.sin(angle) * radius) + midPoint;
+      const y = (Math.cos(angle) * radius) + midPoint;
+      let position = led;
+
+      // Flip even rows
+      if (i % 2 === 0) {
+        position = (led - armPixels) + ((armPixels - j) * 2) -1;
+      }
+      // Add pixel position
+      pixelMap[position] = {
+        x: Math.round(x),
+        y: Math.round(y),
+      };
+      
+      led++;
+    }
+  }
+  return pixelMap;
+}
+</script>
+</body>
+</html>
