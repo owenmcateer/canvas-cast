@@ -22,7 +22,7 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
 
-<script src="./src/App.js"></script>
+<script src="../src/App.js"></script>
 <script>
 // Config
 const matrix = {
@@ -38,7 +38,7 @@ const matrix = {
 };
 
 // Start WS Matrix
-wsMatrix.init(matrix);
+canvasCast.init(matrix);
 
 
 /**
@@ -62,7 +62,7 @@ function draw() {
 
   // Cast data
   const p5canvas = document.getElementById('defaultCanvas0');
-  wsMatrix.cast(p5canvas);
+  canvasCast.cast(p5canvas);
 }
 </script>
 </body>

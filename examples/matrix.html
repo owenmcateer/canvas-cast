@@ -20,7 +20,7 @@
   <div class="statusIP"></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
-<script src="./src/App.js"></script>
+<script src="../src/App.js"></script>
 <script>
 // Config
 const matrix = {
@@ -36,7 +36,7 @@ const matrix = {
 };
 
 // Start WS Matrix
-wsMatrix.init(matrix);
+canvasCast.init(matrix);
 
 
 /**
@@ -61,24 +61,24 @@ function setup() {
 
   // Create rain
   for (let i = 0; i < matrix.width; i++) {
-    lines.push(new line(i, round(random(matrix.height * -1, 0))));
+    lines.push(new lineDrop(i, round(random(matrix.height * -1, 0))));
   }
 }
 
 function draw() {
   background(colours.bg);
 
-  lines.forEach((line) => {
-    line.update();
-    line.render();
+  lines.forEach((lineElement) => {
+    lineElement.update();
+    lineElement.render();
   });
 
   // Cast data
   const p5canvas = document.getElementById('defaultCanvas0');
-  wsMatrix.cast(p5canvas);
+  canvasCast.cast(p5canvas);
 }
 
-class line {
+class lineDrop {
   constructor(x, y) {
     this.x = x;
     this.reset(y);
