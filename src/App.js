@@ -184,8 +184,8 @@ class CanvasCast {
    */
   resizeStage(canvas) {
     // Get W/H scaling
-    const scaleW = Math.floor((window.innerWidth * 0.9) / this.width);
-    const scaleH = Math.floor((window.innerHeight * 0.8) / this.height);
+    const scaleW = (window.innerWidth * 0.9) / this.width;
+    const scaleH = (window.innerHeight * 0.8) / this.height;
 
     // Which size to scale by?
     const scale = (scaleH < scaleW) ? scaleH : scaleW;
@@ -269,7 +269,9 @@ class CanvasCast {
 
     // Draw the pixel map guide
     for (var i = 0; i < this.customMap.length; i++) {
+      ctx.lineWidth = 1;
       ctx.strokeStyle = 'black';
+
       ctx.beginPath();
       ctx.ellipse(this.customMap[i].x, this.customMap[i].y, size, size, Math.PI / 4, 0, 2 * Math.PI);
       ctx.stroke();
