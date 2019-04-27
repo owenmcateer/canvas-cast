@@ -267,6 +267,10 @@ class CanvasCast {
   guide(canvas, size) {
     const ctx = canvas.getContext('2d');
 
+    if (!ctx) {
+      return;
+    }
+
     // Draw the pixel map guide
     for (var i = 0; i < this.customMap.length; i++) {
       ctx.lineWidth = 1;
