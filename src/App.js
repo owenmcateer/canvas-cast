@@ -38,7 +38,7 @@ class CanvasCast {
   connect() {
     // Open WebSocket connection
     this.status(1);
-    this.ws = new WebSocket(`ws://${this.ip}`);
+    this.ws = new WebSocket(`ws://${this.ip}/`);
     this.ws.binaryType = 'arraybuffer';
 
     // WS open event
@@ -73,6 +73,11 @@ class CanvasCast {
       // eslint-disable-next-line
       console.log(`WS message: ${evt.data}`);
     };
+
+    // Close connection on page exit.
+    window.addEventListener('unload', e => {
+      this.ws.close();
+    });
   }
 
   /**

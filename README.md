@@ -9,7 +9,7 @@ Bring your HTML canvas projects into the real world by streaming them in realtim
 
 ## Features:
  - Stream any canvas element over WiFi
- - Tested with 225 pixels at 60fps
+ - Tested with 225 pixels at 60fps and 504 pixels at 30fps
  - 2D or 3D(WebGL)
  - Supports all popular LED types (powered by [FastLED](https://github.com/FastLED/FastLED))
  - Matrix brightness control
