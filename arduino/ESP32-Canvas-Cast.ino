@@ -1,35 +1,30 @@
-// Config
-
 // Wifi SSID and password
 const char* ssid = "";
 const char* password = "";
 
 // Matrix size
 const uint8_t kMatrixWidth = 16;
-const uint8_t kMatrixHeight = 8;
+const uint8_t kMatrixHeight = 16;
 
 // This can be used as a safety feature (0-255)
-const int maxBrightness = 255;
+const int maxBrightness = 127;
 
 // Matrix settings
 // See FastLED for more info: https://github.com/FastLED/FastLED/wiki/Overview
-#define LED_PIN 3
+#define LED_PIN 4
 #define COLOR_ORDER GRB
 #define CHIPSET WS2812B
 #define BRIGHTNESS 127
 // End config
 
+
 // Wifi and WebSockets
-#include <ESP8266WiFi.h>
-#include <WiFiClient.h>
+#include <WiFi.h>
 #include <WebSocketsServer.h>
-#include <Hash.h>
 WebSocketsServer webSocket = WebSocketsServer(81);
 
+
 // Matrix
-#define FASTLED_INTERRUPT_RETRY_COUNT 0
-#define FASTLED_ALLOW_INTERRUPTS 0
-#define FASTLED_ESP8266_DMA
 #include <FastLED.h>
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3001008)
@@ -39,15 +34,57 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 #define NUM_LEDS (kMatrixWidth * kMatrixHeight)
 CRGB leds_plus_safety_pixel[NUM_LEDS + 1];
 CRGB* const leds(leds_plus_safety_pixel + 1);
+CRGB* const ledsBuffer(leds_plus_safety_pixel + 1);
 
-// Misc
+// Setting vars
 #define BOOTING 0
 #define WIFI 1
 #define WAITING 2
 #define CONNECTED 3
 int status = BOOTING;
+bool showOutput = false;
+unsigned long previousMillis = 0;
+unsigned short fps = 0;
+bool newFrame = false;
+
+// Dual core setup
+TaskHandle_t Task1;
 
 
+// Output martix data
+void outputMatrix(void * parameter){
+  while(true) {
+    // Show output?
+    if (showOutput) {
+      // Is system waiting?
+      if (status == WAITING) {
+        // Pulse status LED
+        FastLED.clear();
+        leds[0].setRGB(0, (cos(millis() * 0.003) + 1) * 127, 0);
+        FastLED.show();
+      }
+      else if (newFrame) {
+        FastLED.show();
+        fps++;
+        newFrame = false;
+      }
+  
+      // Debug
+      unsigned long currentMillis = millis();
+      if (currentMillis - previousMillis >= 1000) {
+        // save the last time you blinked the LED
+        previousMillis = currentMillis;
+        Serial.print("FPS: ");
+        Serial.println(fps);
+        fps = 0;
+      }
+    }
+    delay(2);
+  }
+}
+
+
+// Web Socket events
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
   switch(type) {
     case WStype_DISCONNECTED:
@@ -77,9 +114,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         }
         else {
           // Command not understood
+          showOutput = false;
           FastLED.clear();
           leds[0] = CRGB::Red;
-          FastLED.show();
+          showOutput = true;
         }
 
     }
@@ -102,44 +140,56 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
           Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\r\n", num, ip[0], ip[1], ip[2], ip[3], payload);
        
           // Update status
+          showOutput = false;
           FastLED.clear();
           leds[0] = CRGB::Blue;
-          FastLED.show();
           status = CONNECTED;
+          showOutput = true;
         }
     }
       break;
 
     case WStype_BIN:
-      // Serial.printf("[%u] get binary length: %u\n", num, length);
+    { 
+      // Add data into buffer
       for (int i = 0; i < length; i += 3) {
-        leds[i / 3].setRGB(payload[i], payload[(i + 1)], payload[(i + 2)]);
+        ledsBuffer[i / 3].setRGB(payload[i], payload[(i + 1)], payload[(i + 2)]);
       }
-      FastLED.show();
+  
+      // Flip arrays
+      showOutput = false;
+      memcpy(leds, ledsBuffer, NUM_LEDS + 1);
+      showOutput = true;
+      newFrame = true;
+    }
       break;
 
     default:
       Serial.printf("Invalid WStype [%d]\r\n", type);
       // Show status LED
+      showOutput = false;
       FastLED.clear();
       leds[0] = CRGB::Red;
-      FastLED.show();
+      showOutput = true;
       break;
   }
 }
 
 
+// Arduino setup
 void setup() {
   Serial.begin(115200);
+  delay(10);
 
   // Start Matrix
   FastLED.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
   FastLED.setBrightness(min(BRIGHTNESS, maxBrightness));
+  
   // Set status LED
   FastLED.clear();
   leds[0] = CRGB::Yellow;
   FastLED.show();
-
+  
   // Connect to Wifi
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -165,21 +215,25 @@ void setup() {
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
 
-  // Ready and waiting
+  // Dual core setup
+  xTaskCreatePinnedToCore(
+    outputMatrix,   /* Task function. */
+    "outputMatrix", /* name of task. */
+    1000,           /* Stack size of task */
+    NULL,           /* parameter of the task */
+    1,              /* priority of the task */
+    &Task1,         /* Task handle to keep track of created task */
+    0);             /* Core */ 
+
+  // Start output
   status = WAITING;
+  showOutput = true;
 }
 
 
-void loop() {
-  // Is system waiting?
-  if (status == WAITING) {
-    // Pulse status LED
-    FastLED.clear();
-    leds[0].setRGB(0, (cos(millis() * 0.003) + 1) * 127, 0);
-    FastLED.show();
-    delay(16);
-  }
-
+// Core 1 loop
+void loop() {  
   // WebSocket loop
   webSocket.loop();
+  delay(2);
 }
