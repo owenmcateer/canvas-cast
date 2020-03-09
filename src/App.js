@@ -46,7 +46,7 @@ class CanvasCast {
       // eslint-disable-next-line
       console.log('WebSocket open');
       this.wsOpen = true;
-      this.status(2);
+      this.status(1);
 
       // Set default brightness
       this.uiBrightness();
@@ -68,10 +68,21 @@ class CanvasCast {
     };
 
     // WS message received
-    // Currently not used, just logged.
     this.ws.onmessage = (evt) => {
-      // eslint-disable-next-line
-      console.log(`WS message: ${evt.data}`);
+      switch (evt.data) {
+        case 'Connected':
+          this.status(2);
+          break;
+
+        case 'Busy':
+          this.ws.close();
+          setTimeout(() => this.status(4), 250);
+          break;
+
+        default:
+          // eslint-disable-next-line
+          console.log(`WS message: ${evt.data}`);
+      }
     };
 
     // Close connection on page exit.
@@ -108,6 +119,11 @@ class CanvasCast {
       case 3:
         elemStatus.dataset.status = 'error';
         elemStatusTxt.innerHTML = 'error connecting';
+        break;
+
+      case 4:
+        elemStatus.dataset.status = 'busy';
+        elemStatusTxt.innerHTML = 'too many connected';
         break;
 
       default:
@@ -164,7 +180,7 @@ class CanvasCast {
    * to the matrix.
    *
    * @param  {Int} p Pixel position in canvas
-   * @return {Int} Position in Matrix 
+   * @return {Int} Position in Matrix
    */
   matrixSerpentine(p) {
     let position;
