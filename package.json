@@ -25,6 +25,7 @@
   "license": "gpl-3.0",
   "devDependencies": {
     "node-sass": "^4.12.0",
-    "parcel": "^1.12.3"
+    "parcel": "^1.12.3",
+    "sass": "^1.26.2"
   }
 }
