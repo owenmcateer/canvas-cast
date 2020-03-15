@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Serial Canvas Cast</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  </head>
+<body>
+<div class="wsBar">
+  <div class="brightness">
+    Matrix brightness:
+    <small>0%</small>
+    <input id="matrix-brightness" type="range" min="0" max="255" step="1" value="127" >
+    <small>100%</small>
+  </div>
+
+  <h4><a href="https://github.com/owenmcateer/canvas-cast" target="_blank">Canvas Cast</a></h4>
+  <div class="status"></div>
+  <div class="statusTxt"></div>
+  <div class="statusIP"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>
+<script src="./App.js"></script>
+<script>
+// Config
+const matrix = {
+  // Matrix IP & port
+  ip: 'localhost:8081',
+  // Matrix pixel size
+  width: 15,
+  height: 15,
+  // Matrix brightness 0-255
+  brightness: 127,
+  // Context type (2d/webgl)
+  type: '2d',
+};
+
+// Start WS Matrix
+canvasCast.init(matrix);
+
+// Create Canvas
+const canvas = document.createElement('canvas');
+canvas.width = matrix.width;
+canvas.height = matrix.height;
+document.body.appendChild(canvas);
+context = canvas.getContext('2d');
+
+//
+// Your code here
+// Just remember to call `cast()` on each frame:
+// canvasCast.cast(canvas);
+//
+
+
+
+/**
+ * p5js 2D Matrix rain
+ */
+const colours = [];
+const cx = Math.round(matrix.width / 2);
+
+const lines = [];
+
+function setup() {
+  createCanvas(matrix.width, matrix.height);
+  pixelDensity(1);
+  colorMode(RGB, 255, 255, 255, 1);
+  frameRate(30);
+
+  // Colours
+  colours.bg = [0, 3, 0, 0.1];
+  colours.first = [190, 227, 192];
+  colours.green = [30, 130, 42];
+  colours.greenDark = [0, 58, 0];
+
+  // Create rain
+  for (let i = 0; i < matrix.width; i++) {
+    lines.push(new lineDrop(i, round(random(matrix.height * -1, 0))));
+  }
+}
+
+function draw() {
+  background(colours.bg);
+
+  lines.forEach((lineElement) => {
+    lineElement.update();
+    lineElement.render();
+  });
+
+  // Cast data
+  const p5canvas = document.getElementById('defaultCanvas0');
+  canvasCast.cast(p5canvas);
+}
+
+class lineDrop {
+  constructor(x, y) {
+    this.x = x;
+    this.reset(y);
+  }
+
+  reset(y) {
+    this.y = y;
+    this.count = round(random(5, 12));
+    this.speed = random(0.1, 0.3);
+    this.pixels = [];
+    for (let i = 0; i < this.count; i++) {
+      this.pixels.push(new Pixel(
+        this.x,
+        (this.count * -1) + i + this.y,
+        i / (this.count - 1),
+        this.speed));
+    }
+  }
+
+  update() {
+    // Move
+    this.y += this.speed;
+    this.pixels.forEach((p) => {
+      p.update();
+    });
+
+    // Reset?
+    if ((this.y - this.count) > matrix.height) {
+      this.reset(0);
+    }
+  }
+
+  render() {
+    this.pixels.forEach((p) => {
+      p.render();
+    });
+  }
+}
+
+class Pixel {
+  constructor(x, y, pos, speed) {
+    this.x = x;
+    this.y = y;
+    this.pos = pos;
+    this.speed = speed;
+    this.firstLight = (random() > 0.6) ? 1 : 0;
+  }
+
+  update() {
+    this.y += this.speed;
+  }
+
+  render() {
+    if (this.pos === 1 && this.firstLight) {
+      fill(colours.first);
+    }
+    else {
+      fill(lerpColor(color(...colours.green), color(...colours.greenDark), 1 - this.pos));
+    }
+
+    noStroke();
+    rect(this.x, this.y, 1, 1);
+  }
+}
+
+</script>
+</body>
+</html>

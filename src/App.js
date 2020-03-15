@@ -20,6 +20,7 @@ class CanvasCast {
     this.brightness = settings.brightness;
     this.type = settings.type;
     this.customMap = settings.customMap || false;
+    this.layoutSerpentine = settings.layoutSerpentine || false;
 
     this.stageResized = false;
     this.wsOpen = false;
@@ -79,6 +80,14 @@ class CanvasCast {
           setTimeout(() => this.status(4), 250);
           break;
 
+        case 'Closed':
+          this.ws.close();
+          break;
+
+        case 'Error':
+          this.status(3);
+          break;
+
         default:
           // eslint-disable-next-line
           console.log(`WS message: ${evt.data}`);
@@ -96,7 +105,6 @@ class CanvasCast {
    * @param {Int} statusId Statis ID number
    */
   status(statusId) {
-    const open = this.ws;
     const elemStatus = document.querySelector('.wsBar .status');
     const elemStatusTxt = document.querySelector('.wsBar .statusTxt');
 
@@ -169,6 +177,20 @@ class CanvasCast {
       this.brightness = brightness.value;
       this.ws.send(`BRIGHTNESS:${this.brightness}`);
     }
+  }
+
+
+  /**
+   * Get the pixels position in the matrix line.
+   *
+   * @param  {Int} p Pixel position in canvas
+   * @return {Int} Position in Matrix
+   */
+  pixelPosition(p) {
+    if (this.layoutSerpentine) {
+      return this.matrixSerpentine(p);
+    }
+    return p;
   }
 
 
@@ -340,7 +362,7 @@ class CanvasCast {
     return {
       y,
       x: pixel - (y * this.width),
-      position: this.matrixSerpentine(pixel),
+      position: this.pixelPosition(pixel),
     };
   }
 }

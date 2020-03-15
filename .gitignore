@@ -7,9 +7,6 @@ node_modules/
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
-# Distribution director
-dist/
-
 # Silly Mac
 .DS_Store
 
