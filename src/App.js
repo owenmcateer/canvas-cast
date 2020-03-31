@@ -305,28 +305,62 @@ class CanvasCast {
   /**
    * Render pixel guidelines for custom matrix
    * @param {DOM Canvas} canvas DOM Canvas
-   * @param {Int} size Pixel size of guide pixel
+   * @param {Int} radius Pixel radius of guide pixel
    */
-  guide(canvas, size) {
-    const ctx = canvas.getContext('2d');
+  guide(canvas, radius, engine) {
+    switch (engine) {
+      case 'p5js':
+        this.drawGuideP5js(radius);
+        return;
 
+      default:
+        this.drawGuideCanvas(canvas, radius);
+    }
+  }
+
+  /**
+   * Draw pixel guide onto a canvas element.
+   * @param {DOM Canvas} canvas DOM Canvas
+   * @param {Int} radius Pixel radius of guide pixel
+   */
+  drawGuideCanvas(canvas, radius) {
+    // Find canvas
+    const ctx = canvas.getContext('2d');
     if (!ctx) {
-      return;
+      throw error('Canvas not found');
     }
 
     // Draw the pixel map guide
     for (var i = 0; i < this.customMap.length; i++) {
+      ctx.beginPath();
       ctx.lineWidth = 1;
       ctx.strokeStyle = 'black';
-
-      ctx.beginPath();
-      ctx.ellipse(this.customMap[i].x, this.customMap[i].y, size, size, Math.PI / 4, 0, 2 * Math.PI);
+      ctx.ellipse(this.customMap[i].x, this.customMap[i].y, radius, radius, Math.PI / 4, 0, 2 * Math.PI);
       ctx.stroke();
 
+      ctx.beginPath();
+      ctx.lineWidth = 1;
       ctx.strokeStyle = 'white';
-      ctx.beginPath();
-      ctx.ellipse(this.customMap[i].x, this.customMap[i].y, size - 1, size - 1, Math.PI / 4, 0, 2 * Math.PI);
+      ctx.ellipse(this.customMap[i].x, this.customMap[i].y, radius - 1, radius - 1, Math.PI / 4, 0, 2 * Math.PI);
       ctx.stroke();
+    }
+  }
+
+  /**
+   * Draw pixel guide onto a p5js canvas.
+   * @param {Int} radius Pixel radius of guide pixel
+   */
+  drawGuideP5js(radius) {
+    const diameter = radius * 2
+    for (var i = 0; i < this.customMap.length; i++) {
+      noFill();
+      strokeWeight(1);
+
+      stroke('black');
+      ellipse(this.customMap[i].x, this.customMap[i].y, diameter, diameter);
+
+      stroke('white');
+      ellipse(this.customMap[i].x, this.customMap[i].y, diameter - 1, diameter - 1);
     }
   }
 

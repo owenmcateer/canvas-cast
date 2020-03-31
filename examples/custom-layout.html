@@ -79,7 +79,7 @@ function draw() {
   const p5canvas = document.getElementById('defaultCanvas0');
   canvasCast.cast(p5canvas);
   // Custom pixel map guide
-  canvasCast.guide(p5canvas, 5);
+  canvasCast.guide(p5canvas, 5, 'p5js');
 }
 
 
@@ -97,11 +97,11 @@ function gFxMap(size) {
   const angleOffset = Math.PI + (armAngle * 1);
   const midPoint = Math.round(size / 2);
   let led = 0;
-  
+
   // Arms
   for (let i = arms; i > 0; i--) {
     const angle = armAngle * i + angleOffset;
-    
+
     // Arm pixels
     for(j = 0; j < armPixels; j++) {
       const radius = (j * 10) + 50;
@@ -118,7 +118,7 @@ function gFxMap(size) {
         x: Math.round(x),
         y: Math.round(y),
       };
-      
+
       led++;
     }
   }

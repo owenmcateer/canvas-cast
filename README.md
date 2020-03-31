@@ -6,6 +6,8 @@ Cast any `<canvas>` element to an LED Matrix over WebSockets with an Arduino/ESP
 
 Bring your HTML canvas projects into the real world by streaming them in realtime over WiFi to an LED Matrix, using an Arduino compatable board with WiFi, such as the ESP8266..
 
+**Cast over USB?**  
+See https://github.com/owenmcateer/canvas-cast-serial to cast without WiFi using a serial connection over USB.
 
 ## Features:
  - Stream any canvas element over WiFi
