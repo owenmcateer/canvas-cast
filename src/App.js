@@ -233,7 +233,7 @@ class CanvasCast {
     // Which size to scale by?
     const scale = (scaleH < scaleW) ? scaleH : scaleW;
     const newWidth = this.width * scale;
-    const newHeight = this.width * scale;
+    const newHeight = this.height * scale;
 
     // Update stage canvas size
     canvas.style.width = `${newWidth}px`;
