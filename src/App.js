@@ -18,7 +18,7 @@ class CanvasCast {
     this.width = settings.width;
     this.height = settings.height;
     this.brightness = settings.brightness;
-    this.type = settings.type;
+    this.type = settings.type || '2d';
     this.customMap = settings.customMap || false;
     this.layoutSerpentine = settings.layoutSerpentine || false;
 
