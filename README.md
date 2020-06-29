@@ -15,6 +15,7 @@ See https://github.com/owenmcateer/canvas-cast-serial to cast without WiFi using
  - 2D or 3D(WebGL)
  - Supports all popular LED types (powered by [FastLED](https://github.com/FastLED/FastLED))
  - Matrix brightness control
+ - Custom pixel layout mapping
  - Matrix status pixel
  - Web status/control
  
@@ -23,11 +24,12 @@ See https://github.com/owenmcateer/canvas-cast-serial to cast without WiFi using
 
 ## More examples
 
-### [Vanilla Canvas+JS (Game of Life)](examples/Game-of-life.html)
-![Game of Life](examples/imgs/Game-of-life.gif "Game of Life")
-
 ### [p5js (Matrix rain)](examples/matrix.html)
 ![Matrix rain - p5js](examples/imgs/Matrix.gif "Matrix rain - p5js")
+
+### [Custom pixel mapping](https://github.com/owenmcateer/Project-Aureole/)  
+Displays don't just have to be plain grids, custom pixel mapping can create any display shape or layout.  
+[![Custom pixel mapping](examples/imgs/Custom-Pixel-Mapping.gif "Custom pixel mapping")](https://github.com/owenmcateer/Project-Aureole/)
 
 ### [Webcam streaming](examples/webcam.html)
 ![Webcam streaming - p5js](examples/imgs/Webcam.gif "Webcam streaming")
