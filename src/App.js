@@ -187,10 +187,16 @@ class CanvasCast {
    * @return {Int} Position in Matrix
    */
   pixelPosition(p) {
+    let position = p;
+
     if (this.layoutSerpentine) {
-      return this.matrixSerpentine(p);
+      position = this.matrixSerpentine(p);
     }
-    return p;
+
+    if (this.type === 'webgl') {
+      return position * 3;
+    }
+    return position;
   }
 
 
@@ -289,7 +295,7 @@ class CanvasCast {
       }
       else if (this.type === 'webgl') {
         pixel = new Uint8Array(4);
-        context.readPixels(canvasData.x, this.height -1 - canvasData.y, 1, 1, context.RGBA, context.UNSIGNED_BYTE, pixel);
+        context.readPixels(canvasData.x, canvasData.y, 1, 1, context.RGBA, context.UNSIGNED_BYTE, pixel);
       }
 
       // Add pixel data to array
@@ -392,12 +398,22 @@ class CanvasCast {
     }
 
     // Standard matrix
-    const y = Math.floor(pixel / this.width);
-    return {
-      y,
-      x: pixel - (y * this.width),
-      position: this.pixelPosition(pixel),
-    };
+    if (this.type === '2d') {
+      const y = Math.floor(pixel / this.width);
+      return {
+        y,
+        x: pixel - (y * this.width),
+        position: this.pixelPosition(pixel),
+      };
+    }
+    else if (this.type === 'webgl') {
+      const y = Math.floor(pixel / this.width);
+      return {
+        y: this.height - y,
+        x: pixel - (y * this.width),
+        position: this.pixelPosition(pixel),
+      };
+    }
   }
 }
 
