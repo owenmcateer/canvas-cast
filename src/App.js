@@ -289,7 +289,7 @@ class CanvasCast {
       }
       else if (this.type === 'webgl') {
         pixel = new Uint8Array(4);
-        context.readPixels(canvasData.x, canvasData.y, 1, 1, context.RGBA, context.UNSIGNED_BYTE, pixel);
+        context.readPixels(canvasData.x, this.height -1 - canvasData.y, 1, 1, context.RGBA, context.UNSIGNED_BYTE, pixel);
       }
 
       // Add pixel data to array
