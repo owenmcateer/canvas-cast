@@ -12,3 +12,7 @@ node_modules/
 
 # Editors
 .vscode/
+
+# Parcel.js
+.parcel-cache/
+dist/

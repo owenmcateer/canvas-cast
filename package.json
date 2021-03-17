@@ -24,9 +24,10 @@
   ],
   "license": "gpl-3.0",
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.0.0-beta.2",
     "cssnano": "^4.1.10",
     "node-sass": "^4.12.0",
-    "parcel": "^1.12.3",
+    "parcel": "^2.0.0-beta.2",
     "sass": "^1.26.2"
   },
   "bugs": {
