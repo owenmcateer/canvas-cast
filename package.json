@@ -25,10 +25,7 @@
   "license": "gpl-3.0",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.0.0-beta.2",
-    "cssnano": "^4.1.10",
-    "node-sass": "^4.12.0",
-    "parcel": "^2.0.0-beta.2",
-    "sass": "^1.26.2"
+    "parcel": "^2.0.0-beta.2"
   },
   "bugs": {
     "url": "https://github.com/owenmcateer/canvas-cast/issues"
