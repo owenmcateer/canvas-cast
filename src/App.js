@@ -3,11 +3,6 @@
  * Cast any <canvas> element to an LED Matrix
  * over WebSockets with an Arduino/ESP8266.
  */
-
-// Styles
-import './css/styles.scss';
-
-
 class CanvasCast {
   /**
    * Init()
